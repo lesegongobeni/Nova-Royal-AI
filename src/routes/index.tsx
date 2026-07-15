@@ -5,10 +5,12 @@ import {
   Mic,
   Calendar,
   Volume2,
-  User,
   Wand2,
   ListChecks,
+  Sparkles,
+  Crown,
 } from "lucide-react";
+import novaVideo from "@/assets/nova-business.mp4.asset.json";
 
 export const Route = createFileRoute("/")({
   head: () => ({
