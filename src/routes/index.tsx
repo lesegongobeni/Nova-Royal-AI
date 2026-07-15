@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import {
   Mail,
   Mic,
@@ -35,11 +35,16 @@ export const Route = createFileRoute("/")({
 function Nova() {
   const [active, setActive] = useState("dashboard");
   const [isListening, setIsListening] = useState(false);
-  const [status, setStatus] = useState("Hi, I'm Nova. How can I help?");
+  const [status, setStatus] = useState("Initializing Nova...");
   const [emailText, setEmailText] = useState(
     "Subject: Project Update\nHi Team,\n\nJust checking in on the Q4 deliverables. Please send updates by EOD Friday.\n\nBest,\nVint",
   );
   const recognitionRef = useRef<any>(null);
+
+  useEffect(() => {
+    const t = setTimeout(() => setStatus("Hi, I'm Nova. How can I help?"), 1500);
+    return () => clearTimeout(t);
+  }, []);
 
   const speak = (text: string) => {
     if (typeof window === "undefined" || !window.speechSynthesis) return;
@@ -48,7 +53,7 @@ function Nova() {
     utterance.voice =
       voices.find((v) => v.name.includes("Female")) || voices[0];
     utterance.rate = 0.95;
-    utterance.pitch = 1.1;
+    utterance.pitch = 1.2;
     speechSynthesis.speak(utterance);
   };
 
