@@ -10,7 +10,7 @@ import {
   Sparkles,
   Crown,
 } from "lucide-react";
-import novaVideo from "@/assets/nova-business.mp4.asset.json";
+import novaVideo from "@/assets/nova-royal.mp4.asset.json";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -37,10 +37,16 @@ export const Route = createFileRoute("/")({
 function Nova() {
   const [active, setActive] = useState("dashboard");
   const [isListening, setIsListening] = useState(false);
+  const [isTalking, setIsTalking] = useState(false);
   const [status, setStatus] = useState("Initializing Nova...");
   const [emailText, setEmailText] = useState(
     "Subject: Project Update\n\nHi Team,\n\nJust checking in on the Q4 deliverables. Please send updates by EOD Friday.\n\nBest,\nVint",
   );
+  const [meetingNotes, setMeetingNotes] = useState("");
+  const [summary, setSummary] = useState("");
+  const [meetingWith, setMeetingWith] = useState("");
+  const [meetingWhen, setMeetingWhen] = useState("");
+  const [meetingTopic, setMeetingTopic] = useState("");
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const recognitionRef = useRef<any>(null);
 
@@ -62,6 +68,7 @@ function Nova() {
 
   const speak = (text: string) => {
     if (typeof window === "undefined" || !window.speechSynthesis) return;
+    setIsTalking(true);
     if (videoRef.current) {
       videoRef.current.currentTime = 0;
       videoRef.current.play().catch(() => {});
@@ -72,6 +79,7 @@ function Nova() {
       voices.find((v) => v.name.includes("Female")) || voices[0];
     utterance.rate = 0.95;
     utterance.pitch = 1.1;
+    utterance.onend = () => setIsTalking(false);
     speechSynthesis.speak(utterance);
   };
 
@@ -102,6 +110,24 @@ function Nova() {
     }
   };
 
+  const handleSummarize = () => {
+    if (!meetingNotes) return;
+    const s =
+      "Key Points:\n1. Q4 targets discussed\n2. Deadline moved to Friday\n3. Action items assigned to team";
+    setSummary(s);
+    speak(
+      "Here is your summary. Q4 targets discussed. Deadline moved to Friday. Action items assigned to team.",
+    );
+  };
+
+  const handleSetMeeting = () => {
+    if (!meetingWith || !meetingWhen) return alert("Please fill Who and When");
+    speak(
+      `Meeting set with ${meetingWith} on ${meetingWhen} about ${meetingTopic}`,
+    );
+    setStatus("Meeting Scheduled");
+  };
+
   const startListening = () => {
     const SpeechRecognition =
       (window as any).SpeechRecognition ||
@@ -130,7 +156,7 @@ function Nova() {
       <div className="fixed inset-0 bg-[linear-gradient(rgba(79,70,229,0.08)_1px,transparent_1px),linear-gradient(90deg,rgba(79,70,229,0.08)_1px,transparent_1px)] bg-[size:50px_50px]"></div>
 
       {/* 3D HOLOGRAM AI AVATAR */}
-      <div className="fixed top-6 right-6 z-50">
+      <div className="fixed bottom-6 left-6 z-50">
         <div className="relative">
           <div className="absolute inset-0 rounded-2xl bg-[#4F46E5] blur-3xl opacity-50"></div>
           <div className="absolute inset-0 rounded-2xl bg-[#FBBF24] blur-2xl opacity-30"></div>
@@ -140,7 +166,9 @@ function Nova() {
             loop
             muted
             playsInline
-            className="relative w-48 h-48 rounded-2xl border-2 border-[#FBBF24] shadow-[0_0_40px_#4F46E5] object-cover"
+            className={`relative w-48 h-48 rounded-2xl border-2 border-[#FBBF24] shadow-[0_0_40px_#4F46E5] object-cover transition-all duration-300 ${
+              isTalking ? "animate-bounce scale-105 shadow-[0_0_60px_#FBBF24]" : ""
+            }`}
           />
           <div className="mt-3 backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl p-3 w-48">
             <div className="flex items-center justify-center gap-2">
@@ -227,24 +255,47 @@ function Nova() {
             <div className="backdrop-blur-2xl bg-white/5 border border-white/10 p-6 rounded-2xl mb-4">
               <h3 className="font-bold mb-2">1. Summarize Meeting</h3>
               <textarea
+                value={meetingNotes}
+                onChange={(e) => setMeetingNotes(e.target.value)}
                 placeholder="Paste transcript..."
                 className="w-full h-32 bg-[#0A0A0A] border border-white/10 p-3 rounded-xl mb-3 text-[#F5F5F5]"
               />
-              <button className="bg-gradient-to-r from-[#FBBF24] to-[#4F46E5] text-black px-6 py-3 rounded-xl font-bold">
+              <button
+                onClick={handleSummarize}
+                className="bg-gradient-to-r from-[#FBBF24] to-[#4F46E5] text-black px-6 py-3 rounded-xl font-bold"
+              >
                 Summarize
               </button>
+              {summary && (
+                <div className="mt-4 p-4 bg-[#0A0A0A] rounded-xl whitespace-pre-line">
+                  {summary}
+                </div>
+              )}
             </div>
             <div className="backdrop-blur-2xl bg-white/5 border border-white/10 p-6 rounded-2xl">
               <h3 className="font-bold mb-2">2. Set New Meeting</h3>
               <input
+                value={meetingWith}
+                onChange={(e) => setMeetingWith(e.target.value)}
                 placeholder="Who: John from Marketing"
                 className="w-full bg-[#0A0A0A] border border-white/10 p-3 rounded-xl mb-3 text-[#F5F5F5]"
               />
               <input
+                value={meetingWhen}
+                onChange={(e) => setMeetingWhen(e.target.value)}
                 placeholder="When: Tomorrow 2pm"
                 className="w-full bg-[#0A0A0A] border border-white/10 p-3 rounded-xl mb-3 text-[#F5F5F5]"
               />
-              <button className="bg-gradient-to-r from-[#4F46E5] to-[#10B981] text-white px-6 py-3 rounded-xl font-bold">
+              <input
+                value={meetingTopic}
+                onChange={(e) => setMeetingTopic(e.target.value)}
+                placeholder="Topic: Q4 Planning"
+                className="w-full bg-[#0A0A0A] border border-white/10 p-3 rounded-xl mb-4 text-[#F5F5F5]"
+              />
+              <button
+                onClick={handleSetMeeting}
+                className="bg-gradient-to-r from-[#4F46E5] to-[#10B981] text-white px-6 py-3 rounded-xl font-bold"
+              >
                 Set Meeting
               </button>
             </div>
