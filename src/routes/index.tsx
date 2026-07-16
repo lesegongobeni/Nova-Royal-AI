@@ -25,7 +25,7 @@ export const Route = createFileRoute("/")({
       {
         property: "og:description",
         content:
-          "Voice-controlled AI assistant for email, meetings, and scheduling.",
+          "Nova is a voice-controlled AI workplace assistant for email, meetings, and scheduling.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
