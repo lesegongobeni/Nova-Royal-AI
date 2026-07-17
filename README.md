@@ -8,4 +8,4 @@ Nova Royal is a voice-first 3D holographic AI assistant built for executives. S
 ### Design- **Theme**: Royal Executive- **Colors**: Black `#0A0A0A`, Royal Purple `#4F46E5`, Gold `#FBBF24`, Emerald `#10B981`- **UI**: Left sidebar + Dashboard + Hologram widget bottom left that only shows when talking
 ### Tech Stack- **Frontend**: React + TypeScript + Tailwind CSS- **Built With**: Lovable- **Voice**: Web Speech API - SpeechRecognition + SpeechSynthesis- **Icons**: lucide-react- **Avatar**: MP4 Hologram Video with CSS animations
 ### How to Run Locally
-1. Clone the repo```bashgit clone https://github.com/lesegongobeni/whisper-your-work.gitcd whisper-your-work
+1. Clone the repo```bashgit clone https://github.com/lesegongobeni/Nova-Royal-AI/edit/main/README.md
